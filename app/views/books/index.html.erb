@@ -36,6 +36,7 @@
             <th>Title</th>
             <th>Opinion</th>
             <th></th>
+            <th></th>
           </tr>
         </thead>
 
@@ -51,7 +52,7 @@
 
             <% if book.favorited_by?(current_user) %>
               <td>       
-                <%= link_to book_favorite_path(book,book.id), method: :delete do %>
+                <%= link_to book_favorites_path(book,book.id), method: :delete do %>
                   <span class="glyphicon glyphicon-heart" aria-hidden="true"></span>
                   <%= book.favorites.count %>
                 <% end %>
@@ -64,7 +65,9 @@
                 <% end %>
               </td>
             <% end %>
-
+            <td>
+              コメント数:<%= book.comments.count %>
+            </td>
           </tr>
         <% end %>
       </table>

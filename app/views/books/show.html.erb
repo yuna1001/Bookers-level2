@@ -36,6 +36,7 @@
             <th></th>
             <th></th>
             <th></th>
+            <th></th>
           </tr>
         </thead>
         <tr>
@@ -46,7 +47,7 @@
 
           <% if @book.favorited_by?(current_user) %>
             <td>       
-              <%= link_to book_favorite_path(@book), method: :delete do %>
+              <%= link_to book_favorites_path(@book), method: :delete do %>
                 <span class="glyphicon glyphicon-heart" aria-hidden="true"></span>
                 <%= @book.favorites.count %>
               <% end %>
@@ -60,17 +61,52 @@
             </td>
           <% end %>
 
+          <td>コメント数:<%= @book.comments.count %></td>
+
 
           <% if @book.user == current_user %>
             <td><%= link_to "Edit", edit_book_path %></td>
             <td><%= link_to "Destroy", book_path(@book.id), method: :delete, data: { confirm: '削除しますか？' }%></td>
           <% end %>
-
-
         </tr>        
       </table>
-      <%= link_to @book.user.name, user_path(@book.user.id) %>
-    </div>
+      <button type="button" class="btn btn-default btn-xs books-user-btn"><%= link_to @book.user.name, user_path(@book.user.id) %></button>
+      
+
+      <% @book.comments.each do |comments| %>
+      <div class="row">
+        <div class="col-xs-9">
+          <div class="comment-index-box"><%= comments.comment %></div>
+        </div>
+        <div class="col-xs-2">
+          <div><%= comments.user.name %></div>
+        </div>
+
+        <div class="col-xs-1">
+          <% if comments.user == current_user %>
+          <%= link_to "Destroy", book_comments_path(@book.id),  method: :delete %>
+          <% end %>
+        </div>
+
+
+      </div>
+      <% end %>
+
+
+
+
+
+
+
+      <div class="row">
+        <%= form_for [@book, @comment] do |f| %>
+          <div class="col-xs-12 comment-box">
+            <%= f.text_area :comment, rows:'5', class: "form-control",placeholder: "コメントをここに" %>
+          </div>
+          <%= f.submit "送信する", class: "btn btn-success right comment-submit-btn" %>
+        <% end %>
+      </div>
+
   </div>
 </div>
 

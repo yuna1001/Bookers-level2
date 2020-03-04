@@ -1,12 +1,18 @@
 class CommentsController < ApplicationController
 
   def create
-    book = Book.find(params[:book_id])
-    comment = current_user.comments.new(comment_params)
-    comment.book_id = book.id
-    comment.save
-    @url = request.referer
-    redirect_to @url
+    @book = Book.find(params[:book_id])
+    @comments = current_user.comments.new(comment_params)
+    @comments.book_id = @book.id
+    if @comments.save
+      @url = request.referer
+      redirect_to @url
+    else
+      @books = Book.new
+      @comment = Comment.new
+      render template: 'books/show'
+    end
+
   end
 
   def destroy

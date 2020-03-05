@@ -6,6 +6,20 @@ before_action :authenticate_user!
     @book = Book.new
   end
 
+  def following
+    @title = "Following"
+    @user  = User.find(params[:id])
+    @users = @user.following_user
+    render :following
+  end
+
+  def followers
+    @title = "Followers"
+    @user  = User.find(params[:id])
+    @users = @user.follower_user
+    render :followers
+  end
+
   def index
     @book = Book.new
     @user = current_user

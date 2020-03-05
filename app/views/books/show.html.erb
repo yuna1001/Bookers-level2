@@ -8,10 +8,40 @@
 
       <h1>User info</h1>
       <%= attachment_image_tag @book.user, :profile_image, :fill, 60, 60, format: 'jpeg', fallback: "no_image.jpg" %>
-      <h4>name</h4>
-      <p><%= @book.user.name %></p>
-      <h4>introduction</h4>
-      <p><%= @book.user.introduction %></p>
+      <table class="table">
+        <tr>
+          <td><h4>name</h4></td>
+          <td><%= @book.user.name %></td>
+          </td>
+        </tr>
+        <tr>
+          <td><h4>introduction</h4></td>
+          <td><%= @book.user.introduction %></td>
+        <tr>
+          <td><h4>follow</h4></td>
+          <td><%= link_to @book.user.following.count, following_user_path(@book.user) %></td>
+        </tr>
+        <tr>
+          <td><h4>follower</h4></td>
+          <td><%= link_to @book.user.follower.count, followers_user_path(@book.user) %></td>
+        </tr>
+      </table>
+
+      <% unless current_user == @book.user %>
+        <% if current_user.following?(@book.user) %>
+          <%= form_for(current_user.following.find_by(follower_id: @book.user.id), html: { method: :delete }) do |f| %>
+            <%= hidden_field_tag :follower_id, @book.user.id %>
+            <%= f.submit 'Unfollow', class: 'btn btn-danger btn-block' %>
+          <% end %>
+        <% else %>
+          <%= form_for(current_user.following.build) do |f| %>
+            <%= hidden_field_tag :follower_id, @book.user.id %>
+            <%= f.submit 'Follow', class: 'btn btn-primary btn-block' %>
+          <% end %>
+        <% end %>
+      <% end %>
+
+
 
       <h1>New book</h1>
       <%= form_for(@books) do |f| %>

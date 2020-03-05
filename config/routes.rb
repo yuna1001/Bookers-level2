@@ -7,13 +7,22 @@ Rails.application.routes.draw do
 
   get 'home/about' => 'homes#index'  
 
+  
    
 
-  resources :users, only: [:show, :index, :new, :edit, :update]
+  resources :users, only: [:show, :index, :new, :edit, :update] do
+    member do
+    get :following, :followers
+    end
+  end
+
+
 
   resources :books, only: [:index, :new, :create, :show, :edit, :destroy, :update] do
   	resource :favorites, only: [:create, :destroy] 
   	resource :comments, only: [:create, :destroy]
   end
+
+  resources :relationships, only: [:index, :create, :destroy]
 
 end

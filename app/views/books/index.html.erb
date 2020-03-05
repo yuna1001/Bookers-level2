@@ -12,10 +12,24 @@
       <h1>User info</h1>
 
       <%= attachment_image_tag @user, :profile_image, :fill, 30, 30, format: 'jpeg', fallback: "no_image.jpg" %>
-      <h4>name</h4>
-      <p><%= @user.name %></p>
-      <h4>introduction</h4>
-      <p><%= @user.introduction %></p>
+      <table class="table">
+        <tr>
+          <td><h4>name</h4></td>
+          <td><%= @user.name %></td>
+          </td>
+        </tr>
+        <tr>
+          <td><h4>introduction</h4></td>
+          <td><%= @user.introduction %></td>
+        <tr>
+          <td><h4>follow</h4></td>
+          <td><%= link_to @user.following.count, following_user_path(@user) %></td>
+        </tr>
+        <tr>
+          <td><h4>follower</h4></td>
+          <td><%= link_to @user.follower.count, followers_user_path(@user) %></td>
+        </tr>
+      </table>
 
       <h1>New book</h1>
       <%= form_for(@book) do |f| %>

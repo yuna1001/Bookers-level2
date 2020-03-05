@@ -5,10 +5,28 @@
     <div class="col-xs-3">
       <h1>User info</h1>
       <%= attachment_image_tag @user, :profile_image, :fill, 60, 60, format: 'jpeg', fallback: "no_image.jpg" %>
-      <h4>name</h4>
-      <p><%= @user.name %></p>
-      <h4>introduction</h4>
-      <p><%= @user.introduction %></p>
+      <table class="table">
+        <tr>
+          <td><h4>name</h4></td>
+          <td><%= @user.name %></td>
+          </td>
+        </tr>
+        <tr>
+          <td><h4>introduction</h4></td>
+          <td><%= @user.introduction %></td>
+        <tr>
+          <td><h4>follow</h4></td>
+          <td><%= link_to @user.following.count, following_user_path(@user) %></td>
+        </tr>
+        <tr>
+          <td><h4>follower</h4></td>
+          <td><%= link_to @user.follower.count, followers_user_path(@user) %></td>
+        </tr>
+      </table>
+      
+
+
+
 
       <h1>New book</h1>
       <%= form_for(@book) do |f| %>
@@ -29,12 +47,40 @@
           	<th>image</th>
           	<th>name</th>
             <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
           </tr>
         </thead>
         <% @users.each do |user| %>
         <tr>
         	<td><%= attachment_image_tag user, :profile_image, :fill, 30, 30, fallback: "no_image.jpg", size:'30x30' %></td>
         	<td><%= user.name %></td>
+          <td>フォロー数:<%= @user.following.count %></td>
+          <td>フォロワー数:<%= @user.follower.count %></td>
+
+          <% unless current_user == user %>
+            <% if current_user.following?(user) %>
+            <td><%= form_for(current_user.following.find_by(follower_id: user.id), html: { method: :delete }) do |f| %>
+              <%= hidden_field_tag :follower_id, user.id %>
+              <%= f.submit 'フォローを外す', class: 'btn btn-danger' %>
+            </td>
+            <% end %>
+            <% else %>
+            <td><%= form_for(current_user.following.build) do |f| %>
+              <%= hidden_field_tag :follower_id, user.id %>
+              <%= f.submit 'フォローする', class: 'btn btn-primary' %>
+            </td>
+            <% end %>
+            <% end %>
+          <% else %>
+            <td></td>
+          <% end %>
+
+
+
+
+
         	<td><%= link_to "Show", user_path(user.id) %></td>
         </tr>
       <% end %>
@@ -45,3 +91,4 @@
 
 
 
+    
